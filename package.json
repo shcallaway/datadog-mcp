@@ -19,21 +19,23 @@
     "start": "node dist/index.js",
     "dev": "concurrently \"pnpm run watch\" \"nodemon --watch 'dist/**/*.js' dist/index.js\"",
     "claude:install": "sh bin/claude-desktop/install.sh",
-    "claude:tail": "sh bin/claude-desktop/tail.sh"
+    "claude:tail": "sh bin/claude-desktop/tail.sh",
+    "inspector": "pnpm dlx @modelcontextprotocol/inspector node dist/index.js"
   },
   "dependencies": {
     "@datadog/datadog-api-client": "^1.18.0",
     "@modelcontextprotocol/sdk": "1.10.1",
+    "@types/node": "^20.11.19",
     "diff": "^5.1.0",
+    "dotenv": "^16.4.4",
     "glob": "^10.3.10",
     "minimatch": "^10.0.1",
+    "openai": "^4.28.0",
     "zod": "^3.22.4",
-    "zod-to-json-schema": "^3.24.5",
-    "@types/node": "^20.11.19",
-    "dotenv": "^16.4.4",
-    "openai": "^4.28.0"
+    "zod-to-json-schema": "^3.24.5"
   },
   "devDependencies": {
+    "@modelcontextprotocol/inspector": "^0.10.2",
     "@types/diff": "^5.0.9",
     "@types/minimatch": "^5.1.2",
     "@types/node": "^22",

@@ -52,9 +52,9 @@ class SearchLogsTool extends Tool<typeof schema> {
         filterQuery: this.buildQuery(params),
         filterFrom: params.start_time ? new Date(params.start_time) : undefined,
         filterTo: params.end_time ? new Date(params.end_time) : undefined,
-        sort: params.sort_by as v2.LogsSort,
-        pageLimit: params.page_size,
-        pageCursor: params.page_cursor,
+        sort: (params.sort_by as v2.LogsSort) ?? undefined,
+        pageLimit: params.page_size ?? undefined,
+        pageCursor: params.page_cursor ?? undefined,
       });
 
       return {
