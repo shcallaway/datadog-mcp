@@ -1,24 +1,18 @@
 import { z } from "zod";
+import { ToolCallback } from "@modelcontextprotocol/sdk/server/mcp";
 
-abstract class Tool<T extends z.ZodType> {
+abstract class Tool<T extends z.ZodObject<any>> {
   name: string;
   description: string;
   schema: T;
-  params: z.infer<T>;
 
-  constructor(
-    name: string,
-    description: string,
-    schema: T,
-    params: z.infer<T>
-  ) {
+  constructor(name: string, description: string, schema: T) {
     this.name = name;
     this.description = description;
     this.schema = schema;
-    this.params = params;
   }
 
-  abstract handler(params: z.infer<T>): Promise<any>;
+  abstract handler: ToolCallback<T["shape"]>;
 }
 
 export { Tool };

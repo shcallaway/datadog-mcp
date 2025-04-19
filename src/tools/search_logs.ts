@@ -8,19 +8,31 @@ import { z } from "zod";
 const cache = new NodeCache({ stdTTL: 600 });
 
 class SearchLogsTool extends Tool<typeof schema> {
-  private apiInstance: v2.LogsApi;
+  private client: v2.LogsApi;
 
   constructor() {
     super(
       "search_logs",
       "Search logs in Datadog using various filters and parameters",
-      schema,
-      { query: "" }
+      schema
     );
 
     // Initialize the Datadog API client
-    const configuration = client.createConfiguration();
-    this.apiInstance = new v2.LogsApi(configuration);
+    const configuration = client.createConfiguration({
+      authMethods: {
+        apiKeyAuth: process.env.DD_API_KEY,
+        appKeyAuth: process.env.DD_APP_KEY,
+      },
+    });
+
+    // Set the Datadog host if it's provided
+    if (process.env.DD_HOST) {
+      configuration.setServerVariables({
+        site: process.env.DD_HOST,
+      });
+    }
+
+    this.client = new v2.LogsApi(configuration);
   }
 
   private buildQuery(params: z.infer<typeof schema>): string {
@@ -58,13 +70,15 @@ class SearchLogsTool extends Tool<typeof schema> {
       if (cachedResult) {
         return {
           content: [
-            { type: "text" as const, text: "Retrieved from cache:" },
-            { type: "json" as const, json: cachedResult },
+            {
+              type: "text",
+              text: JSON.stringify(cachedResult, null, 2),
+            },
           ],
         };
       }
 
-      const response = await this.apiInstance.listLogsGet({
+      const response = await this.client.listLogsGet({
         filterQuery: this.buildQuery(params),
         filterFrom: params.start_time ? new Date(params.start_time) : undefined,
         filterTo: params.end_time ? new Date(params.end_time) : undefined,
@@ -76,29 +90,24 @@ class SearchLogsTool extends Tool<typeof schema> {
       // Cache the result
       cache.set(cacheKey, response);
 
-      return {
-        content: [
-          { type: "text" as const, text: "Log search results:" },
-          { type: "json" as const, json: response },
-        ],
-      };
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        return {
-          content: [
-            {
-              type: "text" as const,
-              text: `Datadog API Error: ${error.message}`,
-            },
-          ],
-        };
-      }
-
+      // Format the response according to MCP protocol
       return {
         content: [
           {
-            type: "text" as const,
-            text: `Error searching logs: ${String(error)}`,
+            type: "text",
+            text: JSON.stringify(response, null, 2),
+          },
+        ],
+      };
+    } catch (error: unknown) {
+      // Format error response according to MCP protocol
+      return {
+        content: [
+          {
+            type: "text",
+            text: `Error searching logs: ${
+              error instanceof Error ? error.message : String(error)
+            }`,
           },
         ],
       };

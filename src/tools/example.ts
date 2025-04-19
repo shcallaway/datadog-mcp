@@ -1,14 +1,12 @@
 import { Tool } from "../tool.js";
-import { schema, Params } from "../schemas/example.js";
-
+import { schema } from "../schemas/example.js";
+import { z } from "zod";
 class ExampleTool extends Tool<typeof schema> {
   constructor() {
-    super("example_tool", "An example tool that processes a message", schema, {
-      message: "",
-    });
+    super("example_tool", "An example tool that processes a message", schema);
   }
 
-  async handler(params: Params): Promise<any> {
+  async handler(params: z.infer<typeof schema>): Promise<any> {
     return {
       content: [
         { type: "text" as const, text: `Received message: ${params.message}` },
