@@ -32,6 +32,3 @@ export const schema = z.object({
     .optional()
     .describe("Additional filters for the log search"),
 });
-
-// Type inference from the schema
-export type Params = z.infer<typeof schema>;

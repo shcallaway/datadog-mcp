@@ -1,11 +1,7 @@
 import { Tool } from "../tool.js";
 import { client, v2 } from "@datadog/datadog-api-client";
-import NodeCache from "node-cache";
 import { schema } from "../schemas/search_logs.js";
 import { z } from "zod";
-
-// Cache configuration (10 minutes TTL)
-const cache = new NodeCache({ stdTTL: 600 });
 
 class SearchLogsTool extends Tool<typeof schema> {
   private client: v2.LogsApi;
@@ -50,34 +46,8 @@ class SearchLogsTool extends Tool<typeof schema> {
     return query;
   }
 
-  private getCacheKey(params: z.infer<typeof schema>): string {
-    return JSON.stringify({
-      query: params.query,
-      start_time: params.start_time,
-      end_time: params.end_time,
-      sort_by: params.sort_by,
-      page_size: params.page_size,
-      page_cursor: params.page_cursor,
-      filters: params.filters,
-    });
-  }
-
-  async handler(params: z.infer<typeof schema>): Promise<any> {
+  handler = async (params: z.infer<typeof schema>): Promise<any> => {
     try {
-      const cacheKey = this.getCacheKey(params);
-      const cachedResult = cache.get(cacheKey);
-
-      if (cachedResult) {
-        return {
-          content: [
-            {
-              type: "text",
-              text: JSON.stringify(cachedResult, null, 2),
-            },
-          ],
-        };
-      }
-
       const response = await this.client.listLogsGet({
         filterQuery: this.buildQuery(params),
         filterFrom: params.start_time ? new Date(params.start_time) : undefined,
@@ -87,10 +57,6 @@ class SearchLogsTool extends Tool<typeof schema> {
         pageCursor: params.page_cursor,
       });
 
-      // Cache the result
-      cache.set(cacheKey, response);
-
-      // Format the response according to MCP protocol
       return {
         content: [
           {
@@ -100,7 +66,6 @@ class SearchLogsTool extends Tool<typeof schema> {
         ],
       };
     } catch (error: unknown) {
-      // Format error response according to MCP protocol
       return {
         content: [
           {
@@ -112,7 +77,7 @@ class SearchLogsTool extends Tool<typeof schema> {
         ],
       };
     }
-  }
+  };
 }
 
 export const tool = new SearchLogsTool();

@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { ToolCallback } from "@modelcontextprotocol/sdk/server/mcp";
 
 abstract class Tool<T extends z.ZodObject<any>> {
   name: string;
@@ -12,7 +11,7 @@ abstract class Tool<T extends z.ZodObject<any>> {
     this.schema = schema;
   }
 
-  abstract handler: ToolCallback<T["shape"]>;
+  abstract handler: (params: z.infer<T>) => Promise<any>;
 }
 
 export { Tool };

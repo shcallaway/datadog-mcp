@@ -4,6 +4,3 @@ import { z } from "zod";
 export const schema = z.object({
   message: z.string().describe("The message to be processed"),
 });
-
-// Export the type for use in TypeScript
-export type Params = z.infer<typeof schema>;

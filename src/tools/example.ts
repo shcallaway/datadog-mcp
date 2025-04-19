@@ -6,13 +6,13 @@ class ExampleTool extends Tool<typeof schema> {
     super("example_tool", "An example tool that processes a message", schema);
   }
 
-  async handler(params: z.infer<typeof schema>): Promise<any> {
+  handler = async (params: z.infer<typeof schema>): Promise<any> => {
     return {
       content: [
         { type: "text" as const, text: `Received message: ${params.message}` },
       ],
     };
-  }
+  };
 }
 
 export const tool = new ExampleTool();
