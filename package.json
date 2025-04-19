@@ -15,7 +15,9 @@
   "scripts": {
     "build": "tsc && shx chmod +x dist/*.js",
     "prepare": "pnpm run build",
-    "watch": "tsc --watch"
+    "watch": "tsc --watch",
+    "claude:install": "sh bin/claude-desktop/install.sh",
+    "claude:tail": "sh bin/claude-desktop/tail.sh"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "0.5.0",

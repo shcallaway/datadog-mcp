@@ -22,7 +22,7 @@ const ExampleSchema = z.object({
 // Server setup
 const server = new Server(
   {
-    name: "generic-mcp-server",
+    name: "datadog-mcp",
     version: "0.1.0",
   },
   {

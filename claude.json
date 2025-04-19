@@ -1,0 +1,12 @@
+{
+  "command": "node",
+  "args": [
+    "/Users/sherwoodcallaway/code/agihouse-hackathon/datadog-mcp/dist/index.js"
+  ],
+  "env": {
+    "DD_API_KEY": "<YOUR_API_KEY>",
+    "DD_APP_KEY": "<YOUR_APP_KEY>",
+    "DD_HOST": "https://api.datadoghq.eu",
+    "NODE_ENV": "production"
+  }
+}
