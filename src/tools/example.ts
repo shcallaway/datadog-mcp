@@ -1,19 +1,23 @@
 import { z } from "zod";
 
-// Example schema
-export const ExampleSchema = z.object({
+// Example tool schema
+export const exampleToolSchema = z.object({
   message: z.string(),
 });
 
+// Example tool parameters for registration
+export const exampleToolParams = {
+  message: z.string(),
+} as const;
+
 // Example tool handler
-export async function handleExampleTool(args: unknown) {
-  const parsed = ExampleSchema.safeParse(args);
-  if (!parsed.success) {
-    throw new Error(`Invalid arguments for example_tool: ${parsed.error}`);
-  }
+export async function handler(
+  args: z.infer<typeof exampleToolSchema>,
+  extra: any
+) {
   return {
     content: [
-      { type: "text", text: `Received message: ${parsed.data.message}` },
+      { type: "text" as const, text: `Received message: ${args.message}` },
     ],
   };
 }

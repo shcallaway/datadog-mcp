@@ -1,45 +1,19 @@
 #!/usr/bin/env node
 
-import { Server } from "@modelcontextprotocol/sdk/server/index.js";
+import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import {
-  CallToolRequestSchema,
-  ListToolsRequestSchema,
-} from "@modelcontextprotocol/sdk/types.js";
-import { getMCPToolDefinitions, getToolHandler } from "./tools/registry.js";
+import { z } from "zod";
 
-// Server setup
-const server = new Server(
-  {
-    name: "datadog-mcp",
-    version: "0.1.0",
-  },
-  {
-    capabilities: {
-      tools: {},
-    },
-  }
-);
-
-server.setRequestHandler(ListToolsRequestSchema, async () => {
-  return {
-    tools: getMCPToolDefinitions(),
-  };
+// Create an MCP server
+const server = new McpServer({
+  name: "datadog-mcp",
+  version: "0.1.0",
 });
 
-server.setRequestHandler(CallToolRequestSchema, async (request) => {
-  try {
-    const { name, arguments: args } = request.params;
-    const handler = getToolHandler(name);
-    return handler(args);
-  } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : String(error);
-    return {
-      content: [{ type: "text", text: `Error: ${errorMessage}` }],
-      isError: true,
-    };
-  }
-});
+// Register the example tool
+server.tool("example_tool", { message: z.string() }, async ({ message }) => ({
+  content: [{ type: "text" as const, text: `Received message: ${message}` }],
+}));
 
 // Start server
 async function runServer() {
