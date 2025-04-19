@@ -21,7 +21,6 @@ const server = new Server(
   }
 );
 
-// Tool handlers
 server.setRequestHandler(ListToolsRequestSchema, async () => {
   return {
     tools: getMCPToolDefinitions(),
