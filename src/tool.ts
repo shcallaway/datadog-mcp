@@ -1,30 +1,16 @@
-interface ToolParams {
-  [key: string]: any;
-}
+import { z } from "zod";
 
-interface ToolSchema {
-  type: string;
-  properties: {
-    [key: string]: {
-      type: string;
-      description?: string;
-      required?: boolean;
-    };
-  };
-  required?: string[];
-}
-
-abstract class Tool<T = any> {
+abstract class Tool<T extends z.ZodType> {
   name: string;
   description: string;
-  schema: ToolSchema;
-  params: T;
+  schema: T;
+  params: z.infer<T>;
 
   constructor(
     name: string,
     description: string,
-    schema: ToolSchema,
-    params: T
+    schema: T,
+    params: z.infer<T>
   ) {
     this.name = name;
     this.description = description;
@@ -32,7 +18,7 @@ abstract class Tool<T = any> {
     this.params = params;
   }
 
-  abstract handler(params: T): Promise<any>;
+  abstract handler(params: z.infer<T>): Promise<any>;
 }
 
-export { Tool, ToolParams, ToolSchema };
+export { Tool };

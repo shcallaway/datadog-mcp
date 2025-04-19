@@ -2,8 +2,10 @@
 
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { tool as exampleTool } from "./tools/example.js";
+import { tool as searchLogsTool } from "./tools/search_logs.js";
+import { Tool } from "./tool.js";
 import { z } from "zod";
-import { exampleTool } from "./tools/example.js";
 
 // Create an MCP server
 const server = new McpServer({
@@ -11,12 +13,14 @@ const server = new McpServer({
   version: "0.1.0",
 });
 
-// Register the example tool using our new Tool class
-server.tool(
-  exampleTool.name,
-  { message: z.string() },
-  async (params: { message: string }) => exampleTool.handler(params)
-);
+const registerTool = <T extends z.ZodObject<any>>(tool: Tool<T>) => {
+  server.tool(tool.name, tool.schema.shape, async (params: z.infer<T>) =>
+    tool.handler(params)
+  );
+};
+
+registerTool(exampleTool);
+registerTool(searchLogsTool);
 
 // Start server
 async function runServer() {
