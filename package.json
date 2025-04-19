@@ -16,6 +16,8 @@
     "build": "tsc && shx chmod +x dist/*.js",
     "prepare": "pnpm run build",
     "watch": "tsc --watch",
+    "start": "node dist/index.js",
+    "dev": "concurrently \"pnpm run watch\" \"nodemon --watch 'dist/**/*.js' dist/index.js\"",
     "claude:install": "sh bin/claude-desktop/install.sh",
     "claude:tail": "sh bin/claude-desktop/tail.sh"
   },
@@ -31,6 +33,8 @@
     "@types/diff": "^5.0.9",
     "@types/minimatch": "^5.1.2",
     "@types/node": "^22",
+    "concurrently": "^8.2.2",
+    "nodemon": "^3.1.0",
     "shx": "^0.3.4",
     "typescript": "^5.3.3"
   }
