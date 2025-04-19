@@ -13,8 +13,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc && shx chmod +x dist/*.js",
-    "prepare": "pnpm run build",
+    "build": "tsc",
     "watch": "tsc --watch",
     "start": "node dist/index.js",
     "dev": "concurrently \"pnpm run watch\" \"nodemon --watch 'dist/**/*.js' dist/index.js\"",
@@ -22,10 +21,12 @@
     "claude:tail": "sh bin/claude-desktop/tail.sh"
   },
   "dependencies": {
+    "@datadog/datadog-api-client": "^1.23.0",
     "@modelcontextprotocol/sdk": "0.5.0",
     "diff": "^5.1.0",
     "glob": "^10.3.10",
     "minimatch": "^10.0.1",
+    "node-cache": "^5.1.2",
     "zod": "^3.24.3",
     "zod-to-json-schema": "^3.23.5"
   },

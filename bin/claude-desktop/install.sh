@@ -2,7 +2,7 @@
 
 # Path to Claude config
 CLAUDE_DESKTOP_CONFIG="$HOME/Library/Application Support/Claude/claude_desktop_config.json"
-PARTIAL_CONFIG="claude.json"
+PARTIAL_CONFIG="claude-desktop.json"
 
 echo "Installing MCP server for Claude Desktop..."
 
@@ -12,7 +12,7 @@ if [ ! -f "$CLAUDE_DESKTOP_CONFIG" ]; then
     exit 1
 fi
 
-# Check if claude.json exists
+# Check if claude-desktop.json exists
 if [ ! -f "$PARTIAL_CONFIG" ]; then
     echo "Partial config file not found at: $PARTIAL_CONFIG"
     exit 1
