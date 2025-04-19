@@ -1,23 +1,35 @@
-import { z } from "zod";
+import { Tool, ToolSchema } from "../tool.js";
 
-// Example tool schema
-export const exampleToolSchema = z.object({
-  message: z.string(),
-});
-
-// Example tool parameters for registration
-export const exampleToolParams = {
-  message: z.string(),
-} as const;
-
-// Example tool handler
-export async function handler(
-  args: z.infer<typeof exampleToolSchema>,
-  extra: any
-) {
-  return {
-    content: [
-      { type: "text" as const, text: `Received message: ${args.message}` },
-    ],
-  };
+interface ExampleToolParams {
+  message: string;
 }
+
+class ExampleTool extends Tool<ExampleToolParams> {
+  constructor() {
+    const schema: ToolSchema = {
+      type: "object",
+      properties: {
+        message: {
+          type: "string",
+          description: "The message to be processed",
+          required: true,
+        },
+      },
+      required: ["message"],
+    };
+
+    super("example_tool", "An example tool that processes a message", schema, {
+      message: "",
+    });
+  }
+
+  async handler(params: ExampleToolParams): Promise<any> {
+    return {
+      content: [
+        { type: "text" as const, text: `Received message: ${params.message}` },
+      ],
+    };
+  }
+}
+
+export const exampleTool = new ExampleTool();

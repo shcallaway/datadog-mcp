@@ -3,6 +3,7 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
+import { exampleTool } from "./tools/example.js";
 
 // Create an MCP server
 const server = new McpServer({
@@ -10,10 +11,12 @@ const server = new McpServer({
   version: "0.1.0",
 });
 
-// Register the example tool
-server.tool("example_tool", { message: z.string() }, async ({ message }) => ({
-  content: [{ type: "text" as const, text: `Received message: ${message}` }],
-}));
+// Register the example tool using our new Tool class
+server.tool(
+  exampleTool.name,
+  { message: z.string() },
+  async (params: { message: string }) => exampleTool.handler(params)
+);
 
 // Start server
 async function runServer() {
