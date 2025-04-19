@@ -46,16 +46,22 @@ class SearchLogsTool extends Tool<typeof schema> {
     return query;
   }
 
+  private listLogs(
+    params: z.infer<typeof schema>
+  ): Promise<v2.LogsListResponse> {
+    return this.client.listLogsGet({
+      filterQuery: this.buildQuery(params),
+      filterFrom: params.start_time ? new Date(params.start_time) : undefined,
+      filterTo: params.end_time ? new Date(params.end_time) : undefined,
+      sort: (params.sort_by as v2.LogsSort) ?? undefined,
+      pageLimit: params.page_size ?? undefined,
+      pageCursor: params.page_cursor ?? undefined,
+    });
+  }
+
   handler = async (params: z.infer<typeof schema>): Promise<any> => {
     try {
-      const response = await this.client.listLogsGet({
-        filterQuery: this.buildQuery(params),
-        filterFrom: params.start_time ? new Date(params.start_time) : undefined,
-        filterTo: params.end_time ? new Date(params.end_time) : undefined,
-        sort: (params.sort_by as v2.LogsSort) ?? undefined,
-        pageLimit: params.page_size ?? undefined,
-        pageCursor: params.page_cursor ?? undefined,
-      });
+      const response = await this.listLogs(params);
 
       return {
         content: [
