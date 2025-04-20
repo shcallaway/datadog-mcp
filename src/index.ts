@@ -5,6 +5,8 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { tool as exampleTool } from "./tools/example.js";
 import { tool as searchLogsTool } from "./tools/search_logs.js";
+import { tool as getCommitsTool } from "./tools/get_commits.js";
+
 import { Tool } from "./tool.js";
 import { z } from "zod";
 
@@ -22,6 +24,7 @@ const registerTool = <T extends z.ZodObject<any>>(tool: Tool<T>) => {
 
 registerTool(exampleTool);
 registerTool(searchLogsTool);
+registerTool(getCommitsTool);
 
 // Start server
 async function runServer() {
