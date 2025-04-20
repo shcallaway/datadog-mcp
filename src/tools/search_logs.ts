@@ -54,7 +54,7 @@ class SearchLogsTool extends Tool<typeof schema> {
       filterFrom: params.start_time ? new Date(params.start_time) : undefined,
       filterTo: params.end_time ? new Date(params.end_time) : undefined,
       sort: (params.sort_by as v2.LogsSort) ?? undefined,
-      pageLimit: params.page_size ?? undefined,
+      //   pageLimit: params.page_size ?? undefined,
       pageCursor: params.page_cursor ?? undefined,
     });
   }

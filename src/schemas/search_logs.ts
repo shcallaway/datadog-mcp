@@ -23,13 +23,13 @@ export const schema = z.object({
     .describe(
       "Sort order for logs (timestamp for ascending, -timestamp for descending)"
     ),
-  page_size: z
-    .number()
-    .min(1)
-    .max(1000)
-    .optional()
-    .nullable()
-    .describe("Number of logs per page (max: 1000)"),
+  // page_size: z
+  //   .number()
+  //   .min(1)
+  //   .max(1000)
+  //   .optional()
+  //   .nullable()
+  //   .describe("Number of logs per page (integer, max value: 1000)"),
   page_cursor: z
     .string()
     .optional()
